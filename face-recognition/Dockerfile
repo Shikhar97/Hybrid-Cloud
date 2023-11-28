@@ -37,7 +37,7 @@ RUN mkdir -p ${FUNCTION_DIR}
 # Optional – Install the function's dependencies
 # RUN python${RUNTIME_VERSION} -m pip install -r requirements.txt --target ${FUNCTION_DIR}
 # Install Lambda Runtime Interface Client for Python
-RUN python${RUNTIME_VERSION} -m pip install awslambdaric --target ${FUNCTION_DIR}
+# RUN python${RUNTIME_VERSION} -m pip install awslambdaric --target ${FUNCTION_DIR}
 
 # Stage 3 - final runtime image
 # Grab a fresh copy of the Python image
@@ -49,23 +49,23 @@ WORKDIR ${FUNCTION_DIR}
 # Copy in the built dependencies
 COPY --from=build-image ${FUNCTION_DIR} ${FUNCTION_DIR}
 # (Optional) Add Lambda Runtime Interface Emulator and use a script in the ENTRYPOINT for simpler local runs
-ADD https://github.com/aws/aws-lambda-runtime-interface-emulator/releases/latest/download/aws-lambda-rie /usr/bin/aws-lambda-rie
-RUN chmod 755 /usr/bin/aws-lambda-rie
+# ADD https://github.com/aws/aws-lambda-runtime-interface-emulator/releases/latest/download/aws-lambda-rie /usr/bin/aws-lambda-rie
+# RUN chmod 755 /usr/bin/aws-lambda-rie
 
 # Install ffmpeg
 RUN apt-get install -y ffmpeg
 
 # Copy handler function
-COPY requirements.txt ${FUNCTION_DIR}
+COPY ../requirements.txt ${FUNCTION_DIR}
 RUN python${RUNTIME_VERSION} -m pip install -r requirements.txt --target ${FUNCTION_DIR}
-COPY entry.sh /
+# COPY entry.sh /
 
 # Copy function code
-COPY handler.py ${FUNCTION_DIR}
+COPY ../handler.py ${FUNCTION_DIR}
 COPY encoding ${FUNCTION_DIR}
-RUN chmod 777 /entry.sh
+# RUN chmod 777 /entry.sh
 
 # Set the CMD to your handler (could also be done as a parameter override outside of the Dockerfile)
 # CMD [ "handler.handler" ]
-ENTRYPOINT [ "/entry.sh" ]
-CMD [ "handler.face_recognition_handler" ]
+#ENTRYPOINT [ "/entry.sh" ]
+# CMD [ "handler.handle" ]

@@ -10,7 +10,7 @@ import json
 
 INPUT_BUCKET = "cloudspades-input-bucket"
 OUTPUT_BUCKET = "cloudspades-output-bucket"
-ENCODING_FILE_KEY = "face-recognition/encoding"
+ENCODING_FILE_KEY = "encoding"
 TABLE = "student_table"
 CONFIG = dotenv_values()
 
@@ -140,6 +140,6 @@ def handle(req):
     upload_to_s3(output_file_name, video_name)
     print(f"Student information of {student_info['name']} stored in output bucket for {video_name}")
 
-    return {
+    return json.dumps({
         'message': "Done!"
-    }
+    })

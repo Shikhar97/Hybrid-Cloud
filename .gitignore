@@ -161,3 +161,7 @@ cython_debug/
 .DS_Store
 /test_cases/
 /.idea/
+
+template
+build
+.secrets
