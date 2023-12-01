@@ -7,18 +7,11 @@ FROM ubuntu:22.04
 ARG FUNCTION_DIR
 ARG PYTHON_VERSION
 
+RUN python${PYTHON_VERSION} -m pip install --upgrade pip
+
 # Install build dependencies
 RUN apt-get update \
     && apt-get install -y cmake ca-certificates libgl1-mesa-glx
-
-# Update the package lists and install necessary packages
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
-        python${PYTHON_VERSION} \
-        python3-pip \
-    && rm -rf /var/lib/apt/lists/*
-
-RUN python${PYTHON_VERSION} -m pip install --upgrade pip
 
 # Install runtime dependencies
 RUN apt-get update \
