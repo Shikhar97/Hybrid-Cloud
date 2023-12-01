@@ -1,3 +1,5 @@
+import sys
+
 import boto3
 import os
 import face_recognition
@@ -6,6 +8,7 @@ from boto3.dynamodb.conditions import Attr
 import pandas as pd
 from dotenv import dotenv_values
 import requests
+from argparse import ArgumentParser
 import json
 
 INPUT_BUCKET = "cloudspades-input-bucket"
@@ -111,11 +114,12 @@ def get_first_frame():
 
 
 # OpenFaas function handler
-def handle(req):
+def handle(video_name):
+    print(video_name)
     encoding = open_encoding(ENCODING_FILE_KEY)
 
-    json_req = json.loads(req)
-    video_name = req.get(json_req["file_name"])
+    # json_req = json.loads(req)
+    # video_name = req.get(json_req["file_name"])
 
     # Get the object from the event and show its content type
     # video_name = event['Records'][0]['s3']['object']['key']
@@ -143,3 +147,14 @@ def handle(req):
     return json.dumps({
         'message': "Done!"
     })
+
+
+if __name__ == '__main__':
+    # parser = ArgumentParser(description='Downloads a video, extract frame and recognise face')
+    # parser.add_argument('--file_name',
+    #                     dest='file_name',
+    #                     action='store',
+    #                     required=True,
+    #                     help='the name of the file to download')
+    # args = parser.parse_args()
+    handle(sys.argv[-1])

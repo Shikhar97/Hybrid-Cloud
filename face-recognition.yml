@@ -4,7 +4,6 @@ provider:
   gateway: http://127.0.0.1:8080
 functions:
   face-recognition:
-    lang: python3
+    lang: dockerfile
     handler: ./face-recognition
-    image: shikharg1997/face-recognition:latest
-
+    image: face-recognition:latest
