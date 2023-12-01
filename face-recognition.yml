@@ -6,4 +6,4 @@ functions:
   face-recognition:
     lang: dockerfile
     handler: ./face-recognition
-    image: face-recognition:latest
+    image: shikharg1997/face-recognition:latest

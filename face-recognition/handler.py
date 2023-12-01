@@ -7,7 +7,6 @@ import pickle
 from boto3.dynamodb.conditions import Attr
 import pandas as pd
 from dotenv import dotenv_values
-import requests
 from argparse import ArgumentParser
 import json
 
