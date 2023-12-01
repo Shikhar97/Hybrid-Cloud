@@ -18,7 +18,7 @@ RUN apt-get update \
         python3-pip \
     && rm -rf /var/lib/apt/lists/*
 
-RUN python${PYTHON_VERSION} -m pip install --upgrade pip
+RUN python3 -m pip install --upgrade pip
 
 # Install runtime dependencies
 RUN apt-get update \
@@ -27,7 +27,7 @@ RUN apt-get update \
 WORKDIR ${FUNCTION_DIR}
 
 COPY requirements.txt ${FUNCTION_DIR}
-RUN python${PYTHON_VERSION} -m pip install -r requirements.txt --target ${FUNCTION_DIR}
+RUN python3 -m pip install -r requirements.txt --target ${FUNCTION_DIR}
 
 # Copy the watchdog binary
 COPY --from=watchdog /fwatchdog /usr/bin/fwatchdog
