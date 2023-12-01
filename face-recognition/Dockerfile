@@ -14,7 +14,7 @@ RUN apk --no-cache add build-base python3-dev
 
 # Install Python dependencies
 RUN pip install --no-cache-dir --upgrade pip
-RUN pip install --no-cache-dir -r requirements.txt --target "/home/app/"
+RUN pip install --no-cache-dir -r requirements.txt --target ${FUNCTION_DIR}
 
 FROM ubuntu:20.04
 
