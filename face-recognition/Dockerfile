@@ -20,6 +20,7 @@ ARG PYTHON_VERSION
 # Create function directory
 RUN mkdir -p ${FUNCTION_DIR}
 
+WORKDIR ${FUNCTION_DIR}
 # Copy built dependencies from the python-alpine stage
 COPY --from=python-alpine ${FUNCTION_DIR} ${FUNCTION_DIR}
 
@@ -40,11 +41,11 @@ RUN chmod +x /usr/bin/fwatchdog
 RUN addgroup -S app && adduser app -S -G app \
     && chown -R app:app /home/app
 
-USER app
-WORKDIR /home/app
+WORKDIR ${FUNCTION_DIR}
 COPY .env .
 COPY handler.py ${FUNCTION_DIR}
 
+USER app
 # Set environment variables
 ENV fprocess="xargs python3 handler.py"
 ENV write_debug="true"
