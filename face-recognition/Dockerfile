@@ -1,30 +1,36 @@
 ARG FUNCTION_DIR="/home/app/"
 ARG PYTHON_VERSION=3.8
-FROM --platform=${TARGETPLATFORM:-linux/amd64} ghcr.io/openfaas/classic-watchdog:0.2.3 as watchdog
+FROM ghcr.io/openfaas/classic-watchdog:0.2.3 as watchdog
 
-FROM --platform=${TARGETPLATFORM:-linux/amd64} python:${PYTHON_VERSION}-alpine as build-image
+FROM python:${PYTHON_VERSION} AS python-alpine
 
-ARG FUNCTION_DIR
-WORKDIR ${FUNCTION_DIR}
-
-COPY requirements.txt .
+ARG PYTHON_VERSION
 
 # Install build dependencies
-RUN apk --no-cache add build-base python3-dev
+RUN apt-get update \
+    && apt-get install -y cmake ca-certificates libgl1-mesa-glx
 
-# Install Python dependencies
-RUN pip install --no-cache-dir --upgrade pip
-RUN pip install --no-cache-dir -r requirements.txt --target ${FUNCTION_DIR}
+RUN python${PYTHON_VERSION} -m pip install --upgrade pip
 
-FROM ubuntu:20.04
+
+FROM ubuntu:22.04
 
 ARG FUNCTION_DIR
+ARG PYTHON_VERSION
+# Create function directory
+RUN mkdir -p ${FUNCTION_DIR}
+
+# Copy built dependencies from the python-alpine stage
+COPY --from=python-alpine ${FUNCTION_DIR} ${FUNCTION_DIR}
+
 # Install runtime dependencies
 RUN apt-get update \
-    && apt-get install -y cmake ca-certificates libgl1-mesa-glx ffmpeg
+    && apt-get install -y cmake ca-certificates libgl1-mesa-glx \
 
-# Copy built dependencies from the build-image stage
-COPY --from=build-image ${FUNCTION_DIR} ${FUNCTION_DIR}
+RUN apt-get install -y ffmpeg
+
+COPY requirements.txt ${FUNCTION_DIR}
+RUN python${PYTHON_VERSION} -m pip install -r requirements.txt --target ${FUNCTION_DIR}
 
 # Copy the watchdog binary
 COPY --from=watchdog /fwatchdog /usr/bin/fwatchdog
@@ -37,6 +43,7 @@ RUN addgroup -S app && adduser app -S -G app \
 USER app
 WORKDIR /home/app
 COPY .env .
+COPY handler.py ${FUNCTION_DIR}
 
 # Set environment variables
 ENV fprocess="xargs python3 handler.py"
