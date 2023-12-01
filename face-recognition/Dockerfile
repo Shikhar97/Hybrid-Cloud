@@ -12,22 +12,23 @@ RUN apt-get update \
 
 RUN python${PYTHON_VERSION} -m pip install --upgrade pip
 
+FROM python-alpine AS build-image
+
+ARG FUNCTION_DIR
+ARG RUNTIME_VERSION
+# Create function directory
+RUN mkdir -p ${FUNCTION_DIR}
 
 FROM ubuntu:22.04
 
 ARG FUNCTION_DIR
 ARG PYTHON_VERSION
-# Create function directory
-RUN mkdir -p ${FUNCTION_DIR}
-
 WORKDIR ${FUNCTION_DIR}
+
 # Copy built dependencies from the python-alpine stage
-COPY --from=python-alpine ${FUNCTION_DIR} ${FUNCTION_DIR}
+COPY --from=build-image ${FUNCTION_DIR} ${FUNCTION_DIR}
 
 # Install runtime dependencies
-RUN apt-get update \
-    && apt-get install -y cmake ca-certificates libgl1-mesa-glx \
-
 RUN apt-get install -y ffmpeg
 
 COPY requirements.txt ${FUNCTION_DIR}
