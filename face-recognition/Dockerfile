@@ -43,6 +43,7 @@ RUN groupadd app && useradd -g app -s /bin/sh app && chown -R app:app /home/app
 
 WORKDIR ${FUNCTION_DIR}
 COPY .env .
+COPY encoding .
 COPY handler.py ${FUNCTION_DIR}
 
 USER app
@@ -52,7 +53,6 @@ ENV write_debug="true"
 
 # Expose ports
 EXPOSE 8080
-EXPOSE 6969
 
 # Healthcheck
 HEALTHCHECK --interval=3s CMD [ -e /tmp/.lock ] || exit 1
