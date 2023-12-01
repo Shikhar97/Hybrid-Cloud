@@ -13,7 +13,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # Install build dependencies
 RUN apt-get update \
-    && apt-get install -y cmake ca-certificates libgl1-mesa-glx build-essential
+    && apt-get install -y cmake ca-certificates libgl1-mesa-glx build-essential net-tools iputils-ping nano
 
 # Update the package lists and install necessary packages
 RUN apt-get update \
