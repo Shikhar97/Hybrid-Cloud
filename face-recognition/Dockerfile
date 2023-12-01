@@ -29,7 +29,8 @@ WORKDIR ${FUNCTION_DIR}
 COPY --from=build-image ${FUNCTION_DIR} ${FUNCTION_DIR}
 
 # Install runtime dependencies
-RUN apt-get install -y ffmpeg
+RUN apt-get update \
+    && apt-get install -y ffmpeg
 
 COPY requirements.txt ${FUNCTION_DIR}
 RUN python${PYTHON_VERSION} -m pip install -r requirements.txt --target ${FUNCTION_DIR}
