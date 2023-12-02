@@ -7,7 +7,6 @@ import pickle
 from boto3.dynamodb.conditions import Attr
 import pandas as pd
 from dotenv import dotenv_values
-from argparse import ArgumentParser
 import json
 
 INPUT_BUCKET = "cloudspades-input-bucket"
@@ -17,9 +16,9 @@ TABLE = "student_table"
 CONFIG = dotenv_values()
 
 s3_client = boto3.client('s3',
-                      aws_secret_access_key=CONFIG.get('CEPH_SECRET_ACCESS_KEY'),
-                      aws_access_key_id=CONFIG.get('CEPH_ACCESS_KEY_ID'),
-                      endpoint_url=CONFIG.get('CEPH_ENDPOINT_URL'))
+                      aws_secret_access_key=sys.argv[2],
+                      aws_access_key_id=sys.argv[3],
+                      endpoint_url=sys.argv[4])
 dynamo_client = boto3.resource('dynamodb', aws_secret_access_key=CONFIG.get('AWS_SECRET_ACCESS_KEY'),
                       aws_access_key_id=CONFIG.get('AWS_ACCESS_KEY_ID'), region_name=CONFIG.get('AWS_DEFAULT_REGION'))
 
@@ -117,11 +116,6 @@ def handle(video_name):
     print(video_name)
     encoding = open_encoding(ENCODING_FILE_KEY)
 
-    # json_req = json.loads(req)
-    # video_name = req.get(json_req["file_name"])
-
-    # Get the object from the event and show its content type
-    # video_name = event['Records'][0]['s3']['object']['key']
     video_path = '/tmp/' + video_name
     try:
         s3_client.download_file(INPUT_BUCKET, video_name, video_path)
@@ -149,11 +143,4 @@ def handle(video_name):
 
 
 if __name__ == '__main__':
-    # parser = ArgumentParser(description='Downloads a video, extract frame and recognise face')
-    # parser.add_argument('--file_name',
-    #                     dest='file_name',
-    #                     action='store',
-    #                     required=True,
-    #                     help='the name of the file to download')
-    # args = parser.parse_args()
-    handle(sys.argv[-1])
+    handle(sys.argv[1])
