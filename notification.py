@@ -14,7 +14,7 @@ CONFIG = dotenv_values()
 
 def main():
     found_objects_list = []
-    http_listener_url = "http://127.0.0.1:8080/function/face-recognition"
+    http_listener_url = "http://127.0.0.1:8080/async-function/face-recognition"
     headers = {
         'Content-Type': 'application/x-www-form-urlencoded',
     }
@@ -31,7 +31,7 @@ def main():
                 key = item["Key"] + item['LastModified'].strftime("%Y-%m-%d %H:%M:%S %Z")
                 if key not in found_objects_list:
                     print("%s uploaded. Notification triggered!" % item['Key'])
-                    data = item['Key']
+                    data = "%s %s %s %s" % (item['Key'], CONFIG.get('CEPH_SECRET_ACCESS_KEY'), CONFIG.get('CEPH_ACCESS_KEY_ID'), CONFIG.get('CEPH_ENDPOINT_URL'))
                     requests.post(http_listener_url, verify=False, data=data)
                     found_objects_list.append(key)
 
