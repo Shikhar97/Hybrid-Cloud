@@ -15,12 +15,17 @@ ENCODING_FILE_KEY = "encoding"
 TABLE = "student_table"
 CONFIG = dotenv_values()
 
+CEPH_SECRET_ACCESS_KEY = sys.argv[2],
+CEPH_ACCESS_KEY_ID = sys.argv[3],
+CEPH_ENDPOINT_URL = sys.argv[4]
+
 s3_client = boto3.client('s3',
-                      aws_secret_access_key=sys.argv[2],
-                      aws_access_key_id=sys.argv[3],
-                      endpoint_url=sys.argv[4])
+                         aws_secret_access_key=CEPH_SECRET_ACCESS_KEY,
+                         aws_access_key_id=CEPH_ACCESS_KEY_ID,
+                         endpoint_url=CEPH_ENDPOINT_URL)
 dynamo_client = boto3.resource('dynamodb', aws_secret_access_key=CONFIG.get('AWS_SECRET_ACCESS_KEY'),
-                      aws_access_key_id=CONFIG.get('AWS_ACCESS_KEY_ID'), region_name=CONFIG.get('AWS_DEFAULT_REGION'))
+                               aws_access_key_id=CONFIG.get('AWS_ACCESS_KEY_ID'),
+                               region_name=CONFIG.get('AWS_DEFAULT_REGION'))
 
 
 # Function to query dynamo db and get academic information in JSON format
@@ -61,9 +66,9 @@ def strip_file_name(filename):
 # Function to upload the csv file generated above to s3
 def upload_to_s3(upload_path, key):
     s3 = boto3.resource('s3',
-                        aws_secret_access_key=CONFIG.get('CEPH_SECRET_ACCESS_KEY'),
-                        aws_access_key_id=CONFIG.get('CEPH_ACCESS_KEY_ID'),
-                        endpoint_url=CONFIG.get('CEPH_ENDPOINT_URL'))
+                        aws_secret_access_key=CEPH_SECRET_ACCESS_KEY,
+                        aws_access_key_id=CEPH_ACCESS_KEY_ID,
+                        endpoint_url=CEPH_ENDPOINT_URL)
     bucket = s3.Bucket(OUTPUT_BUCKET)
 
     bucket.upload_file(Filename=upload_path,
