@@ -15,8 +15,8 @@ ENCODING_FILE_KEY = "encoding"
 TABLE = "student_table"
 CONFIG = dotenv_values()
 
-CEPH_SECRET_ACCESS_KEY = sys.argv[2],
-CEPH_ACCESS_KEY_ID = sys.argv[3],
+CEPH_SECRET_ACCESS_KEY = sys.argv[2]
+CEPH_ACCESS_KEY_ID = sys.argv[3]
 CEPH_ENDPOINT_URL = sys.argv[4]
 
 s3_client = boto3.client('s3',
